@@ -456,7 +456,7 @@ const ServiceCardFlip: React.FC<ServiceCardFlipProps> = ({ item, index }) => {
         <div className="service-number text-outline" style={{
           fontSize: '6rem', fontWeight: 900, color: 'transparent', WebkitTextStroke: '2px #e2e8f0', lineHeight: 1, marginBottom: '-30px', position: 'relative', zIndex: -1, opacity: 0.5
         }}>0{index + 1}</div>
-        <h3 style={{ fontSize: '3rem', marginBottom: '20px', color: '#0077b6', fontFamily: "'Marble Bold', sans-serif", fontWeight: 800 }}>{item.title}</h3>
+        <h3 style={{ fontSize: '3rem', marginBottom: '20px', color: '#0077b6', fontFamily: "'Montserrat', sans-serif", fontWeight: 900 }}>{item.title}</h3>
         <p style={{ fontSize: '1.25rem', color: '#556', marginBottom: '30px', lineHeight: 1.6 }}>{item.desc}</p>
         <motion.button
           whileHover={{ scale: 1.05, backgroundColor: '#00b0e4' }}
@@ -493,7 +493,7 @@ const Services = () => {
           style={{ marginBottom: '120px', textAlign: 'center' }}
         >
           <span style={{ color: '#00c6ff', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', fontSize: '0.9rem' }}>Nuestra Especialidad</span>
-          <h2 style={{ fontSize: '3.5rem', fontFamily: "'Marble Bold', sans-serif", color: '#0077b6', fontWeight: 900, marginTop: '10px' }}>Servicios Premium</h2>
+          <h2 style={{ fontSize: '3.5rem', fontFamily: "'Montserrat', sans-serif", color: '#0077b6', fontWeight: 900, marginTop: '10px' }}>Servicios Premium</h2>
           <div style={{ width: '80px', height: '6px', background: 'linear-gradient(90deg, #0077b6, #0096c7)', margin: '20px auto', borderRadius: '3px' }}></div>
         </motion.div>
 
@@ -523,7 +523,7 @@ const Contact = () => {
           transition={{ duration: 0.8 }}
           style={{ textAlign: 'center', marginBottom: '40px' }}
         >
-          <h2 style={{ fontSize: '3rem', fontFamily: "'Marble Bold', sans-serif", fontWeight: 900, marginBottom: '16px', textShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
+          <h2 style={{ fontSize: '3rem', fontFamily: "'Montserrat', sans-serif", fontWeight: 900, marginBottom: '16px', textShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
             Contáctanos
           </h2>
           <p style={{ opacity: 0.95, fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto', fontWeight: 300 }}>
