@@ -38,14 +38,14 @@ const IMAGES = {
   // New Header Image: Modern Dental Office
   hero: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=2000&q=80",
 
-  protesis: "/protesis.jpg",
+  protesis: "protesis.jpg",
 
-  implantes: "/implantes.jpg",
+  implantes: "implantes.jpg",
 
   // New Limpieza Image: Dental Tools/Hygiene
-  limpieza: "/limpieza.jpg",
+  limpieza: "limpieza.jpg",
 
-  ortodoncia: "/ortodoncia.jpg"
+  ortodoncia: "ortodoncia.jpg"
 };
 
 // --- COMPONENTS ---
