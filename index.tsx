@@ -372,8 +372,20 @@ const ServiceCard3D = ({ item, index }: { item: any, index: number }) => {
   );
 };
 
+// Type definition for service items
+interface ServiceItem {
+  title: string;
+  desc: string;
+  img: string;
+}
+
+interface ServiceCardFlipProps {
+  item: ServiceItem;
+  index: number;
+}
+
 // Updated ServiceCard with TRUE 3D FLIP (BW to Color)
-const ServiceCardFlip = ({ item, index }: { item: any, index: number }) => {
+const ServiceCardFlip: React.FC<ServiceCardFlipProps> = ({ item, index }) => {
   return (
     <div className="service-row" style={{
       marginBottom: '150px',
