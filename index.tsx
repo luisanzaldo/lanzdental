@@ -180,7 +180,7 @@ const Services = () => {
     <section id="services" style={{ padding: '100px 0' }}>
       <div className="container">
         <div style={{ marginBottom: '80px', textAlign: 'center' }}>
-          <h2 style={{ fontSize: '3rem', color: '#002d55', fontWeight: 800 }}>Nuestros Servicios</h2>
+          <h2 style={{ fontSize: '3rem', fontFamily: "'Marble Bold', sans-serif", color: '#002d55', fontWeight: 800 }}>Nuestros Servicios</h2>
           <div style={{ width: '50px', height: '4px', background: '#00c6ff', margin: '15px auto', borderRadius: '2px' }}></div>
         </div>
 
@@ -193,7 +193,7 @@ const Services = () => {
               </div>
               <div className="service-info anim-up delay-100">
                 <div className="service-number">0{i + 1}</div>
-                <h3 style={{ fontSize: '2.5rem', marginBottom: '16px', color: '#002d55' }}>{item.title}</h3>
+                <h3 style={{ fontSize: '2.5rem', marginBottom: '16px', color: '#002d55', fontFamily: "'Marble Bold', sans-serif" }}>{item.title}</h3>
                 <p style={{ fontSize: '1.1rem', color: '#4a5568', marginBottom: '24px' }}>{item.desc}</p>
                 <span style={{ color: '#00c6ff', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   CONOCE MÁS <span style={{ fontSize: '1.2rem' }}>→</span>
