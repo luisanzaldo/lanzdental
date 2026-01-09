@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { motion } from 'framer-motion';
+import { MapPin, Phone, Mail } from 'lucide-react';
 
 // --- HOOKS ---
 const useOnScreen = (options: IntersectionObserverInit) => {
@@ -262,7 +263,7 @@ const Header = () => {
 
 const Information = () => {
   return (
-    <section style={{ padding: '120px 0', background: 'white', overflow: 'hidden' }}>
+    <section style={{ padding: '80px 0', background: 'white', overflow: 'hidden' }}>
       <div className="container">
         <motion.div
           initial={{ opacity: 0, x: -250 }} // Empieza mucho más a la izquierda
@@ -274,7 +275,7 @@ const Information = () => {
           <h2 style={{ fontSize: '0.9rem', color: '#00c6ff', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 700, marginBottom: '20px' }}>
             Sobre Nosotros
           </h2>
-          <p style={{ fontSize: 'clamp(1.5rem, 2.5vw, 2rem)', color: '#002d55', fontWeight: 600, lineHeight: 1.4 }}>
+          <p style={{ fontSize: 'clamp(1.2rem, 2vw, 1.5rem)', color: '#002d55', fontWeight: 600, lineHeight: 1.4 }}>
             "Somos una clínica dental especializada en implantes y prótesis, con una larga trayectoria en el sector y avalado por múltiples clientes e instituciones."
           </p>
         </motion.div>
@@ -375,17 +376,21 @@ const ServiceCard3D = ({ item, index }: { item: any, index: number }) => {
 const ServiceCardFlip = ({ item, index }: { item: any, index: number }) => {
   return (
     <div className="service-row" style={{
-      display: 'flex',
-      gap: '60px',
-      alignItems: 'center',
-      flexDirection: index % 2 === 0 ? 'row' : 'row-reverse',
       marginBottom: '150px',
       perspective: '1500px' // Perspectiva profunda
     }}>
 
       {/* 3D Container */}
       <motion.div
-        style={{ flex: 1, height: '400px', position: 'relative', cursor: 'pointer' }}
+        className="service-img-container"
+        style={{
+          flex: 1,
+          height: '400px', // Altura base para escritorio, móvil la controlará vía CSS
+          position: 'relative',
+          cursor: 'pointer',
+          overflow: 'visible', // CRÍTICO: visible para que el 3D no se corte
+          perspective: '1500px' // Movido aquí para asegurar contexto 3D directo
+        }}
         onMouseMove={(e) => {
           // Optional: Add subtle mouse tilt for extra 3D feel
         }}
@@ -439,7 +444,7 @@ const ServiceCardFlip = ({ item, index }: { item: any, index: number }) => {
         <div className="service-number text-outline" style={{
           fontSize: '6rem', fontWeight: 900, color: 'transparent', WebkitTextStroke: '2px #e2e8f0', lineHeight: 1, marginBottom: '-30px', position: 'relative', zIndex: -1, opacity: 0.5
         }}>0{index + 1}</div>
-        <h3 style={{ fontSize: '3rem', marginBottom: '20px', color: '#002d55', fontFamily: "'Marble Bold', sans-serif", fontWeight: 800 }}>{item.title}</h3>
+        <h3 style={{ fontSize: '3rem', marginBottom: '20px', color: '#0077b6', fontFamily: "'Marble Bold', sans-serif", fontWeight: 800 }}>{item.title}</h3>
         <p style={{ fontSize: '1.25rem', color: '#556', marginBottom: '30px', lineHeight: 1.6 }}>{item.desc}</p>
         <motion.button
           whileHover={{ scale: 1.05, backgroundColor: '#00b0e4' }}
@@ -467,7 +472,7 @@ const Services = () => {
   ];
 
   return (
-    <section id="services" style={{ padding: '150px 0', background: '#fcfcfc' }}>
+    <section id="services" style={{ padding: '100px 0', background: '#fcfcfc' }}>
       <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -476,8 +481,8 @@ const Services = () => {
           style={{ marginBottom: '120px', textAlign: 'center' }}
         >
           <span style={{ color: '#00c6ff', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', fontSize: '0.9rem' }}>Nuestra Especialidad</span>
-          <h2 style={{ fontSize: '3.5rem', fontFamily: "'Marble Bold', sans-serif", color: '#002d55', fontWeight: 900, marginTop: '10px' }}>Servicios Premium</h2>
-          <div style={{ width: '80px', height: '6px', background: 'linear-gradient(90deg, #00c6ff, #0072ff)', margin: '20px auto', borderRadius: '3px' }}></div>
+          <h2 style={{ fontSize: '3.5rem', fontFamily: "'Marble Bold', sans-serif", color: '#0077b6', fontWeight: 900, marginTop: '10px' }}>Servicios Premium</h2>
+          <div style={{ width: '80px', height: '6px', background: 'linear-gradient(90deg, #0077b6, #0096c7)', margin: '20px auto', borderRadius: '3px' }}></div>
         </motion.div>
 
         {list.map((item, i) => (
@@ -489,34 +494,71 @@ const Services = () => {
 };
 
 const Contact = () => {
-  const [ref, isVisible] = useOnScreen({ threshold: 0.2 });
   return (
     <section id="contact" style={{
-      background: 'linear-gradient(135deg, #00c6ff 0%, #0072ff 100%)',
+      position: 'relative',
+      background: '#2790CB',
       color: 'white',
-      padding: '100px 0'
+      padding: '60px 0',
+      overflow: 'hidden'
     }}>
-      <div className="container">
-        <div ref={ref} className={`anim-wrapper ${isVisible ? 'active' : ''}`} style={{ textAlign: 'center', marginBottom: '60px' }}>
-          <h2 className="anim-up" style={{ fontSize: '3rem', marginBottom: '16px' }}>Contáctanos</h2>
-          <p className="anim-up delay-100" style={{ opacity: 0.9, fontSize: '1.2rem' }}>Agenda tu valoración hoy mismo.</p>
-        </div>
 
-        <div className="contact-grid">
-          <div className="contact-card">
-            <h3 style={{ fontSize: '1.3rem', marginBottom: '15px', color: '#fff' }}>Ubicación</h3>
-            <p style={{ opacity: 0.9 }}>Av. Insurgentes Sur 1337-301,<br />Insurgentes Mixcoac, Benito Juárez,<br />03920, Ciudad de México.</p>
-          </div>
-          <div className="contact-card">
-            <h3 style={{ fontSize: '1.3rem', marginBottom: '15px', color: '#fff' }}>Teléfono</h3>
-            <p style={{ fontSize: '1.2rem', fontWeight: 600 }}>+52 55 2775 1104</p>
-            <p style={{ opacity: 0.8, fontSize: '0.9rem' }}>Lunes a Viernes: 9am - 7pm</p>
-          </div>
-          <div className="contact-card">
-            <h3 style={{ fontSize: '1.3rem', marginBottom: '15px', color: '#fff' }}>Email</h3>
-            <p style={{ fontSize: '1.1rem' }}>contacto@lanzdental.com</p>
-          </div>
-        </div>
+
+      <div className="container" style={{ position: 'relative', zIndex: 2 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          style={{ textAlign: 'center', marginBottom: '40px' }}
+        >
+          <h2 style={{ fontSize: '3rem', fontFamily: "'Marble Bold', sans-serif", fontWeight: 900, marginBottom: '16px', textShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
+            Contáctanos
+          </h2>
+          <p style={{ opacity: 0.95, fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto', fontWeight: 300 }}>
+            Estamos listos para transformar tu sonrisa. Agenda tu valoración hoy mismo.
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={{
+            visible: { transition: { staggerChildren: 0.1 } }
+          }}
+          className="contact-grid"
+          style={{ gap: '24px' }}
+        >
+          {[
+            { title: "Ubicación", content: <p style={{ fontSize: '0.95rem' }}>Av. Insurgentes Sur 1337-301,<br />Insurgentes Mixcoac, Benito Juárez,<br />03920, Ciudad de México.</p>, icon: <MapPin size={32} strokeWidth={2} /> },
+            { title: "Teléfono", content: <><p style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '4px' }}>+52 55 2775 1104</p><p style={{ opacity: 0.7, fontSize: '0.8rem' }}>Lunes a Viernes: 9am - 7pm</p></>, icon: <Phone size={32} strokeWidth={2} /> },
+            { title: "Email", content: <p style={{ fontSize: '1rem', fontWeight: 500 }}>contacto@lanzdental.com</p>, icon: <Mail size={32} strokeWidth={2} /> }
+          ].map((card, i) => (
+            <motion.div
+              key={i}
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: { opacity: 1, y: 0, transition: { type: "spring", bounce: 0.2 } }
+              }}
+              whileHover={{ y: -5, backgroundColor: 'rgba(255, 255, 255, 0.2)', boxShadow: '0 15px 30px rgba(0,0,0,0.2)' }}
+              className="contact-card"
+              style={{
+                background: 'rgba(255, 255, 255, 0.1)', // Vidrio más sutil
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                padding: '30px 20px',
+                borderRadius: '20px',
+                textAlign: 'center',
+                cursor: 'default',
+                color: 'white'
+              }}
+            >
+              <div style={{ marginBottom: '15px', display: 'flex', justifyContent: 'center' }}>{card.icon}</div>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: '10px', color: '#fff', fontWeight: 700 }}>{card.title}</h3>
+              <div style={{ opacity: 0.9, lineHeight: 1.5 }}>{card.content}</div>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
@@ -569,7 +611,7 @@ const Chatbot = () => {
             placeholder="Escribe aquí..."
             style={{ flex: 1, padding: '8px 12px', borderRadius: '20px', border: '1px solid #ddd', outline: 'none' }}
           />
-          <button onClick={send} style={{ background: 'none', border: 'none', color: '#004e92', fontWeight: 700, cursor: 'pointer' }}>Enviar</button>
+          <button onClick={send} style={{ background: '#00c6ff', border: 'none', color: 'white', fontWeight: 700, cursor: 'pointer', padding: '8px 20px', borderRadius: '20px', boxShadow: '0 4px 10px rgba(0, 198, 255, 0.3)' }}>Enviar</button>
         </div>
       </div>
     </>
@@ -577,7 +619,7 @@ const Chatbot = () => {
 };
 
 const Footer = () => (
-  <footer style={{ background: '#001a33', color: '#5c6b7f', padding: '30px', textAlign: 'center', fontSize: '0.85rem' }}>
+  <footer style={{ background: '#0077b6', color: 'rgba(255, 255, 255, 0.8)', padding: '40px 20px', textAlign: 'center', fontSize: '0.9rem' }}>
     © {new Date().getFullYear()} Lanz Dental. Todos los derechos reservados.
   </footer>
 );

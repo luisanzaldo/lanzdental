@@ -161,8 +161,7 @@
       align-items: center;
       color: white;
       overflow: hidden;
-      /* Updated: Fresh Gradient harmonizing with Contact section */
-      background: linear-gradient(135deg, #004e92 0%, #00c6ff 100%);
+      background: linear-gradient(135deg, #023e8a 0%, #0096c7 100%);
     }
 
     .hero-bg {
@@ -297,14 +296,14 @@
       right: 30px;
       width: 60px;
       height: 60px;
-      background: var(--primary);
+      background: #00c6ff;
       border-radius: 50%;
       color: white;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 10px 25px rgba(0, 78, 146, 0.3);
+      box-shadow: 0 10px 25px rgba(0, 198, 255, 0.4);
       z-index: 1001;
       border: none;
       transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -403,9 +402,20 @@
       }
 
       .service-img-container {
-        width: 100%;
-        height: 300px;
+        width: 100% !important;
+        flex: none !important;
+        height: 400px !important;
+        overflow: visible !important;
+        margin-bottom: 40px;
+        perspective: 1000px;
       }
+
+      .service-img-container img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+      }
+
 
       h1 {
         font-size: 2.5rem !important;
