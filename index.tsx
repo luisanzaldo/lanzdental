@@ -584,6 +584,22 @@ const Chatbot = () => {
 
   useEffect(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), [history, isOpen]);
 
+  useEffect(() => {
+    const handleScrollLock = () => {
+      if (isOpen && window.innerWidth <= 900) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'auto';
+      }
+    };
+    handleScrollLock();
+    window.addEventListener('resize', handleScrollLock);
+    return () => {
+      document.body.style.overflow = 'auto';
+      window.removeEventListener('resize', handleScrollLock);
+    };
+  }, [isOpen]);
+
   const send = () => {
     if (!msg.trim()) return;
     setHistory([...history, { role: 'user', text: msg }]);
@@ -595,11 +611,14 @@ const Chatbot = () => {
 
   return (
     <>
-      <button className="chatbot-btn" onClick={() => setIsOpen(!isOpen)}>
+      <button className={`chatbot-btn ${isOpen ? 'chat-open' : ''}`} onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? '✕' : '💬'}
       </button>
       <div className={`chat-window ${isOpen ? 'open' : ''}`}>
-        <div style={{ background: '#004e92', color: 'white', padding: '16px', fontWeight: 700 }}>Asistente Lanz</div>
+        <div style={{ background: '#2790CB', color: 'white', padding: '16px', fontWeight: 700, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span>Asistente Lanz</span>
+          <button className="chat-close-btn" onClick={() => setIsOpen(false)}>✕</button>
+        </div>
         <div style={{ flex: 1, padding: '16px', overflowY: 'auto', background: '#f8faff', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {history.map((h, i) => (
             <div key={i} style={{
