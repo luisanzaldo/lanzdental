@@ -222,7 +222,7 @@ const Header = () => {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               filter: 'drop-shadow(0 2px 10px rgba(109, 213, 237, 0.3))'
-            }}>perfección.</span>
+            }}>perfección</span>
           </motion.h1>
 
           <motion.p
@@ -453,8 +453,8 @@ const ServiceCardFlip: React.FC<ServiceCardFlipProps> = ({ item, index }) => {
         transition={{ duration: 0.8 }}
         style={{ flex: 1 }}
       >
-        <div className="service-number text-outline" style={{
-          fontSize: '6rem', fontWeight: 900, color: 'transparent', WebkitTextStroke: '2px #e2e8f0', lineHeight: 1, marginBottom: '-30px', position: 'relative', zIndex: -1, opacity: 0.5
+        <div className="service-number" style={{
+          fontSize: '6rem', fontWeight: 900, color: '#00c6ff', lineHeight: 1, marginBottom: '-30px', position: 'relative', zIndex: -1, opacity: 0.2
         }}>0{index + 1}</div>
         <h3 style={{ fontSize: '3rem', marginBottom: '20px', color: '#0077b6', fontFamily: "'Montserrat', sans-serif", fontWeight: 900 }}>{item.title}</h3>
         <p style={{ fontSize: '1.25rem', color: '#556', marginBottom: '30px', lineHeight: 1.6 }}>{item.desc}</p>
