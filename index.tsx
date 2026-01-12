@@ -79,7 +79,7 @@ const Navbar = () => {
         {/* CSS Logo -> Bulletproof rendering */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', zIndex: 1003, position: 'relative' }}>
           <div style={{
-            width: '32px', height: '32px', background: mobileMenuOpen ? '#fff' : (scrolled ? '#004e92' : '#fff'),
+            width: '32px', height: '32px', background: mobileMenuOpen ? '#fff' : (scrolled ? '#2790CB' : '#fff'),
             maskImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'M12 2C7.03 2 3 6.03 3 11v9h18v-9c0-4.97-4.03-9-9-9z\'/%3E%3Cpath d=\'M12 11v6\'/%3E%3C/svg%3E")',
             WebkitMaskImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'M12 2C7.03 2 3 6.03 3 11v9h18v-9c0-4.97-4.03-9-9-9z\'/%3E%3Cpath d=\'M12 11v6\'/%3E%3C/svg%3E")',
             WebkitMaskRepeat: 'no-repeat', WebkitMaskSize: 'contain',
@@ -89,11 +89,11 @@ const Navbar = () => {
             fontFamily: 'Montserrat',
             fontWeight: 800,
             fontSize: '1.25rem',
-            color: mobileMenuOpen ? '#fff' : (scrolled ? '#002d55' : '#fff'),
+            color: mobileMenuOpen ? '#fff' : (scrolled ? '#2790CB' : '#fff'),
             letterSpacing: '-0.5px',
             transition: 'color 0.3s ease'
           }}>
-            LANZ<span style={{ color: mobileMenuOpen ? '#fff' : (scrolled ? '#00c6ff' : '#00c6ff') }}>DENTAL</span>
+            LANZ<span style={{ color: '#00c6ff' }}>DENTAL</span>
           </span>
         </div>
 
