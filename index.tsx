@@ -79,7 +79,7 @@ const Navbar = () => {
         {/* CSS Logo -> Bulletproof rendering */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', zIndex: 1003, position: 'relative' }}>
           <div style={{
-            width: '32px', height: '32px', background: mobileMenuOpen ? '#fff' : (scrolled ? '#2790CB' : '#fff'),
+            width: '32px', height: '32px', background: mobileMenuOpen ? '#fff' : (scrolled ? '#004e92' : '#fff'),
             maskImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'M12 2C7.03 2 3 6.03 3 11v9h18v-9c0-4.97-4.03-9-9-9z\'/%3E%3Cpath d=\'M12 11v6\'/%3E%3C/svg%3E")',
             WebkitMaskImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'M12 2C7.03 2 3 6.03 3 11v9h18v-9c0-4.97-4.03-9-9-9z\'/%3E%3Cpath d=\'M12 11v6\'/%3E%3C/svg%3E")',
             WebkitMaskRepeat: 'no-repeat', WebkitMaskSize: 'contain',
@@ -89,11 +89,11 @@ const Navbar = () => {
             fontFamily: 'Montserrat',
             fontWeight: 800,
             fontSize: '1.25rem',
-            color: mobileMenuOpen ? '#fff' : (scrolled ? '#2790CB' : '#fff'),
+            color: mobileMenuOpen ? '#fff' : (scrolled ? '#002d55' : '#fff'),
             letterSpacing: '-0.5px',
             transition: 'color 0.3s ease'
           }}>
-            LANZ<span style={{ color: '#00c6ff' }}>DENTAL</span>
+            LANZ<span style={{ color: mobileMenuOpen ? '#fff' : '#00c6ff' }}>DENTAL</span>
           </span>
         </div>
 
@@ -576,78 +576,7 @@ const Contact = () => {
   );
 };
 
-const Chatbot = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [msg, setMsg] = useState("");
-  const [history, setHistory] = useState([{ role: 'bot', text: '¡Hola! ¿Te gustaría agendar una cita?' }]);
-  const bottomRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), [history, isOpen]);
-
-  useEffect(() => {
-    const handleScrollLock = () => {
-      if (isOpen && window.innerWidth <= 900) {
-        document.body.style.overflow = 'hidden';
-      } else {
-        document.body.style.overflow = 'auto';
-      }
-    };
-    handleScrollLock();
-    window.addEventListener('resize', handleScrollLock);
-    return () => {
-      document.body.style.overflow = 'auto';
-      window.removeEventListener('resize', handleScrollLock);
-    };
-  }, [isOpen]);
-
-  const send = () => {
-    if (!msg.trim()) return;
-    setHistory([...history, { role: 'user', text: msg }]);
-    setMsg("");
-    setTimeout(() => {
-      setHistory(h => [...h, { role: 'bot', text: 'Gracias. Un asesor se pondrá en contacto contigo pronto.' }]);
-    }, 1000);
-  };
-
-  return (
-    <>
-      <button className={`chatbot-btn ${isOpen ? 'chat-open' : ''}`} onClick={() => setIsOpen(!isOpen)}>
-        {isOpen ? '✕' : '💬'}
-      </button>
-      <div className={`chat-window ${isOpen ? 'open' : ''}`}>
-        <div style={{ background: '#2790CB', color: 'white', padding: '16px', fontWeight: 700, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span>Asistente Lanz</span>
-          <button className="chat-close-btn" onClick={() => setIsOpen(false)}>✕</button>
-        </div>
-        <div style={{ flex: 1, padding: '16px', overflowY: 'auto', background: '#f8faff', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {history.map((h, i) => (
-            <div key={i} style={{
-              alignSelf: h.role === 'user' ? 'flex-end' : 'flex-start',
-              background: h.role === 'user' ? '#004e92' : 'white',
-              color: h.role === 'user' ? 'white' : '#333',
-              padding: '10px 14px', borderRadius: '12px', fontSize: '0.9rem',
-              boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
-              maxWidth: '80%'
-            }}>
-              {h.text}
-            </div>
-          ))}
-          <div ref={bottomRef} />
-        </div>
-        <div style={{ padding: '12px', borderTop: '1px solid #eee', display: 'flex', gap: '8px' }}>
-          <input
-            value={msg}
-            onChange={e => setMsg(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && send()}
-            placeholder="Escribe aquí..."
-            style={{ flex: 1, padding: '8px 12px', borderRadius: '20px', border: '1px solid #ddd', outline: 'none' }}
-          />
-          <button onClick={send} style={{ background: '#00c6ff', border: 'none', color: 'white', fontWeight: 700, cursor: 'pointer', padding: '8px 20px', borderRadius: '20px', boxShadow: '0 4px 10px rgba(0, 198, 255, 0.3)' }}>Enviar</button>
-        </div>
-      </div>
-    </>
-  );
-};
 
 const Footer = () => (
   <footer style={{ background: '#0077b6', color: 'rgba(255, 255, 255, 0.8)', padding: '40px 20px', textAlign: 'center', fontSize: '0.9rem' }}>
@@ -663,7 +592,6 @@ const App = () => (
     <Services />
     <Contact />
     <Footer />
-    <Chatbot />
   </>
 );
 
