@@ -575,6 +575,198 @@ const Contact = () => {
     </section>
   );
 };
+const Chatbot = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [msg, setMsg] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [history, setHistory] = useState([{ role: 'bot', text: '¡Hola! Bienvenido a Lanz Dental. ¿En qué puedo ayudarte hoy?' }]);
+
+  // sessionID persistente para mantener el hilo de la conversación
+  const [sessionId] = useState(() => {
+    const saved = localStorage.getItem('lanz_dental_chat_session');
+    if (saved) return saved;
+    const newId = Math.random().toString(36).substring(7);
+    localStorage.setItem('lanz_dental_chat_session', newId);
+    return newId;
+  });
+
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll al final de la conversación
+  useEffect(() => {
+    if (isOpen) {
+      setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }, [history, isOpen, isLoading]);
+
+  const send = async () => {
+    if (!msg.trim() || isLoading) return;
+
+    const userText = msg.trim();
+    setHistory(h => [...h, { role: 'user', text: userText }]);
+    setMsg("");
+    setIsLoading(true);
+
+    try {
+      // Protocolo oficial basado en @n8n/chat:
+      // URL: Webhook principal + query param action=sendMessage
+      const webhookUrl = 'https://n8n-5q3b.onrender.com/webhook/a868aa62-9d26-44ba-b7b2-463e0130da9f/chat';
+
+      const response = await fetch(`${webhookUrl}?action=sendMessage`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          chatInput: userText,
+          sessionId: sessionId
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error en el servidor: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      let botResponse = "";
+      if (Array.isArray(data)) {
+        botResponse = data[0]?.output || data[0]?.response || "Lo siento, no pude procesar tu respuesta.";
+      } else {
+        botResponse = data.output || data.response || "Lo siento, no pude procesar tu respuesta.";
+      }
+
+      setHistory(h => [...h, { role: 'bot', text: botResponse }]);
+    } catch (error) {
+      console.error('Chat Error:', error);
+      setHistory(h => [...h, { role: 'bot', text: 'Lo siento, tuve un problema al conectar con el asistente. ¿Podrías intentar de nuevo?' }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <button
+        className={`chatbot-btn ${isOpen ? 'chat-open' : ''}`}
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label="Abrir chat"
+      >
+        {isOpen ? '✕' : <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z" /></svg>}
+      </button>
+
+      <div className={`chat-window ${isOpen ? 'open' : ''}`}>
+        <div style={{
+          background: 'linear-gradient(135deg, #2790CB 0%, #004e92 100%)',
+          color: 'white',
+          padding: '20px',
+          fontWeight: 700,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ width: '8px', height: '8px', background: '#4ade80', borderRadius: '50%', boxShadow: '0 0 10px #4ade80' }}></div>
+            <span style={{ fontSize: '1rem', fontFamily: "'Montserrat', sans-serif" }}>Asistente Lanz</span>
+          </div>
+          <button className="chat-close-btn" onClick={() => setIsOpen(false)}>✕</button>
+        </div>
+
+        <div style={{
+          flex: 1,
+          padding: '20px',
+          overflowY: 'auto',
+          background: '#f8faff',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px'
+        }}>
+          {history.map((h, i) => (
+            <div key={i} style={{
+              alignSelf: h.role === 'user' ? 'flex-end' : 'flex-start',
+              background: h.role === 'user' ? '#004e92' : 'white',
+              color: h.role === 'user' ? 'white' : '#2d3748',
+              padding: '12px 18px',
+              borderRadius: h.role === 'user' ? '20px 20px 0 20px' : '20px 20px 20px 0',
+              fontSize: '0.95rem',
+              boxShadow: h.role === 'user' ? '0 4px 10px rgba(0,78,146,0.15)' : '0 4px 10px rgba(0,0,0,0.03)',
+              maxWidth: '85%',
+              lineHeight: 1.5
+            }}>
+              {h.text}
+            </div>
+          ))}
+
+          {isLoading && (
+            <div style={{
+              alignSelf: 'flex-start',
+              background: 'white',
+              padding: '12px 18px',
+              borderRadius: '20px 20px 20px 0',
+              boxShadow: '0 4px 10px rgba(0,0,0,0.03)',
+              display: 'flex',
+              gap: '4px'
+            }}>
+              <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1 }}>•</motion.span>
+              <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }}>•</motion.span>
+              <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }}>•</motion.span>
+            </div>
+          )}
+          <div ref={bottomRef} />
+        </div>
+
+        <div style={{
+          padding: '20px',
+          borderTop: '1px solid #edf2f7',
+          background: 'white',
+          display: 'flex',
+          gap: '12px',
+          alignItems: 'center'
+        }}>
+          <input
+            value={msg}
+            onChange={e => setMsg(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && send()}
+            placeholder="Escribe tu mensaje..."
+            disabled={isLoading}
+            style={{
+              flex: 1,
+              padding: '14px 20px',
+              borderRadius: '30px',
+              border: '2px solid #f1f5f9',
+              outline: 'none',
+              fontSize: '0.95rem',
+              background: isLoading ? '#f8faff' : 'white',
+              transition: 'all 0.3s'
+            }}
+          />
+          <button
+            onClick={send}
+            disabled={isLoading}
+            style={{
+              background: isLoading ? '#cbd5e0' : '#00c6ff',
+              border: 'none',
+              color: 'white',
+              width: '48px',
+              height: '48px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '50%',
+              cursor: isLoading ? 'default' : 'pointer',
+              boxShadow: isLoading ? 'none' : '0 8px 16px rgba(0, 198, 255, 0.3)',
+              transition: 'all 0.3s'
+            }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+          </button>
+        </div>
+      </div>
+    </>
+  );
+};
 
 
 
@@ -592,6 +784,7 @@ const App = () => (
     <Services />
     <Contact />
     <Footer />
+    <Chatbot />
   </>
 );
 
