@@ -276,7 +276,7 @@ const Information = () => {
             Sobre Nosotros
           </h2>
           <p style={{ fontSize: 'clamp(1.2rem, 2vw, 1.5rem)', color: '#002d55', fontWeight: 600, lineHeight: 1.4 }}>
-            "Somos una clínica dental especializada en implantes y prótesis, con una larga trayectoria en el sector y avalado por múltiples clientes e instituciones."
+            Somos una clínica dental especializada en implantes y prótesis, con una larga trayectoria en el sector y avalado por múltiples clientes e instituciones.
           </p>
         </motion.div>
       </div>
