@@ -78,17 +78,10 @@ const Navbar = () => {
       <div className="container nav-content">
         {/* CSS Logo -> Bulletproof rendering */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', zIndex: 1003, position: 'relative' }}>
-          <div style={{
-            width: '32px', height: '32px', background: mobileMenuOpen ? '#fff' : (scrolled ? '#2790CB' : '#fff'),
-            maskImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'M12 2C7.03 2 3 6.03 3 11v9h18v-9c0-4.97-4.03-9-9-9z\'/%3E%3Cpath d=\'M12 11v6\'/%3E%3C/svg%3E")',
-            WebkitMaskImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'M12 2C7.03 2 3 6.03 3 11v9h18v-9c0-4.97-4.03-9-9-9z\'/%3E%3Cpath d=\'M12 11v6\'/%3E%3C/svg%3E")',
-            WebkitMaskRepeat: 'no-repeat', WebkitMaskSize: 'contain',
-            transition: 'background 0.3s ease'
-          }}></div>
           <span style={{
             fontFamily: 'Montserrat',
             fontWeight: 800,
-            fontSize: '1.25rem',
+            fontSize: '1.45rem',
             color: mobileMenuOpen ? '#fff' : (scrolled ? '#2790CB' : '#fff'),
             letterSpacing: '-0.5px',
             transition: 'color 0.3s ease'
@@ -686,7 +679,7 @@ const Chatbot = () => {
           {history.map((h, i) => (
             <div key={i} style={{
               alignSelf: h.role === 'user' ? 'flex-end' : 'flex-start',
-              background: h.role === 'user' ? '#004e92' : 'white',
+              background: h.role === 'user' ? '#2790CB' : 'white',
               color: h.role === 'user' ? 'white' : '#2d3748',
               padding: '12px 18px',
               borderRadius: h.role === 'user' ? '20px 20px 0 20px' : '20px 20px 20px 0',
