@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import PrivacyPolicy from './PrivacyPolicy';
 
 // --- HOOKS ---
@@ -809,6 +809,8 @@ const MainContent = () => (
   </>
 );
 
+
+
 const App = () => (
   <Router>
     <ScrollToTop />
@@ -816,6 +818,7 @@ const App = () => (
     <Routes>
       <Route path="/" element={<MainContent />} />
       <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
     <Footer />
     <Chatbot />
