@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client';
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import PrivacyPolicy from './PrivacyPolicy';
 
 // --- HOOKS ---
 const useOnScreen = (options: IntersectionObserverInit) => {
@@ -33,6 +35,26 @@ const useParallax = (speed = 0.5) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [speed]);
   return offset;
+};
+
+const ScrollToTop = () => {
+  const { pathname, hash } = useLocation();
+
+  useEffect(() => {
+    if (!hash) {
+      window.scrollTo(0, 0);
+    } else {
+      setTimeout(() => {
+        const id = hash.replace('#', '');
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  }, [pathname, hash]);
+
+  return null;
 };
 
 // --- IMAGES (UNSPLASH) ---
@@ -72,30 +94,30 @@ const Navbar = () => {
   }, [mobileMenuOpen]);
 
   // Hamburger line color logic
-  const lineColor = mobileMenuOpen ? '#fff' : (scrolled ? '#002d55' : '#fff');
+  const isDarkBackgroundRoute = window.location.pathname.includes('/privacy') || scrolled;
+  const lineColor = mobileMenuOpen ? '#fff' : (isDarkBackgroundRoute ? '#002d55' : '#fff');
 
   return (
     <nav className={scrolled ? 'scrolled' : ''}>
       <div className="container nav-content">
-        {/* CSS Logo -> Bulletproof rendering */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', zIndex: 1003, position: 'relative' }}>
+        <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', zIndex: 1003, position: 'relative' }}>
           <span style={{
             fontFamily: 'Montserrat',
             fontWeight: 800,
             fontSize: '1.3rem',
-            color: mobileMenuOpen ? '#fff' : (scrolled ? '#2790CB' : '#fff'),
+            color: mobileMenuOpen ? '#fff' : (isDarkBackgroundRoute ? '#2790CB' : '#fff'),
             letterSpacing: '-0.5px',
             transition: 'color 0.3s ease'
           }}>
             LANZ<span style={{ color: '#00c6ff' }}>DENTAL</span>
           </span>
-        </div>
+        </Link>
 
-        <div className="nav-links">
-          <a href="#home">Home</a>
-          <a href="#services">Servicios</a>
-          <a href="#contact">Contacto</a>
-          <a href="#privacy">Aviso de Privacidad</a>
+        <div className={`nav-links ${isDarkBackgroundRoute ? 'dark-text' : ''}`}>
+          <Link to="/#home">Home</Link>
+          <Link to="/#services">Servicios</Link>
+          <Link to="/#contact">Contacto</Link>
+          <Link to="/privacy">Aviso de Privacidad</Link>
         </div>
 
         <button
@@ -129,10 +151,10 @@ const Navbar = () => {
       </div>
 
       <div className={`mobile-menu-overlay ${mobileMenuOpen ? 'open' : ''}`}>
-        <a href="#home" onClick={() => setMobileMenuOpen(false)}>Home</a>
-        <a href="#services" onClick={() => setMobileMenuOpen(false)}>Servicios</a>
-        <a href="#contact" onClick={() => setMobileMenuOpen(false)}>Contacto</a>
-        <a href="#privacy" onClick={() => setMobileMenuOpen(false)}>Aviso de Privacidad</a>
+        <Link to="/#home" onClick={() => setMobileMenuOpen(false)}>Home</Link>
+        <Link to="/#services" onClick={() => setMobileMenuOpen(false)}>Servicios</Link>
+        <Link to="/#contact" onClick={() => setMobileMenuOpen(false)}>Contacto</Link>
+        <Link to="/privacy" onClick={() => setMobileMenuOpen(false)}>Aviso de Privacidad</Link>
       </div>
     </nav>
   );
@@ -776,16 +798,26 @@ const Footer = () => (
   </footer>
 );
 
-const App = () => (
+const MainContent = () => (
   <>
-    <Navbar />
     <Header />
     <Information />
     <Services />
     <Contact />
+  </>
+);
+
+const App = () => (
+  <Router>
+    <ScrollToTop />
+    <Navbar />
+    <Routes>
+      <Route path="/" element={<MainContent />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+    </Routes>
     <Footer />
     <Chatbot />
-  </>
+  </Router>
 );
 
 const root = createRoot(document.getElementById('root')!);
