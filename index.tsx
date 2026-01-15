@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { HashRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Link, useLocation, Navigate, useNavigate } from 'react-router-dom';
 import Lenis from 'lenis';
 import PrivacyPolicy from './PrivacyPolicy';
 
@@ -39,7 +39,7 @@ const useParallax = (speed = 0.5) => {
 };
 
 const ScrollToTop = () => {
-  const { pathname, hash } = useLocation();
+  const { pathname, hash, state } = useLocation();
 
   useEffect(() => {
     // Initialize Lenis
@@ -69,23 +69,38 @@ const ScrollToTop = () => {
   }, []);
 
   useEffect(() => {
-    if (!hash) {
-      window.scrollTo(0, 0);
-    } else {
+    const lenis = (window as any).lenis;
+
+    // Si hay un ID en el state (desde el Navbar personalizado)
+    if (state?.scrollTo) {
+      setTimeout(() => {
+        const element = document.getElementById(state.scrollTo);
+        if (element && lenis) {
+          lenis.scrollTo(element, { duration: 2.5 });
+        } else if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+      return;
+    }
+
+    // Comportamiento estándar para hashes
+    if (hash) {
       setTimeout(() => {
         const id = hash.replace('#', '');
         const element = document.getElementById(id);
-        if (element) {
-          const lenis = (window as any).lenis;
-          if (lenis) {
-            lenis.scrollTo(element, { duration: 2.5 }); // Specifically slow duration for anchor links
-          } else {
-            element.scrollIntoView({ behavior: 'smooth' });
-          }
+        if (element && lenis) {
+          lenis.scrollTo(element, { duration: 2.5 });
+        } else if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
         }
       }, 100);
+    } else {
+      // Forzar arriba si no hay hash ni state
+      window.scrollTo(0, 0);
+      if (lenis) lenis.scrollTo(0, { immediate: true });
     }
-  }, [pathname, hash]);
+  }, [pathname, hash, state]);
 
   return null;
 };
@@ -112,6 +127,23 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const scrollToSection = (e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    const element = document.getElementById(id);
+    const lenis = (window as any).lenis;
+
+    if (location.pathname !== '/') {
+      // Si estamos en otra página (ej. Privacidad), navegamos a home primero
+      navigate('/', { state: { scrollTo: id } });
+    } else if (element && lenis) {
+      lenis.scrollTo(element, { duration: 2.5 });
+    } else if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    setMobileMenuOpen(false);
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -128,6 +160,7 @@ const Navbar = () => {
   }, [mobileMenuOpen]);
 
   // Use location instead of window.location for reactivity
+  const [isMenuHovered, setIsMenuHovered] = useState(false);
   const isPrivacy = location.pathname.includes('/privacy');
   const isDarkBackgroundRoute = isPrivacy || scrolled;
   const lineColor = mobileMenuOpen ? '#fff' : (isDarkBackgroundRoute ? '#002d55' : '#fff');
@@ -149,46 +182,51 @@ const Navbar = () => {
         </Link>
 
         <div className={`nav-links ${isDarkBackgroundRoute ? 'dark-text' : ''}`}>
-          <Link to="/#home">Home</Link>
-          <Link to="/#services">Servicios</Link>
-          <Link to="/#contact">Contacto</Link>
+          <a href="#home" onClick={(e) => scrollToSection(e, 'home')}>Home</a>
+          <a href="#services" onClick={(e) => scrollToSection(e, 'services')}>Servicios</a>
+          <a href="#contact" onClick={(e) => scrollToSection(e, 'contact')}>Contacto</a>
           <Link to="/privacy">Aviso de Privacidad</Link>
         </div>
 
         <button
           className="mobile-menu-btn"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          onMouseEnter={() => setIsMenuHovered(true)}
+          onMouseLeave={() => setIsMenuHovered(false)}
           aria-label="Menu"
         >
           <div style={{
             width: '24px',
             height: '2px',
-            background: lineColor,
+            background: isMenuHovered ? '#00c6ff' : lineColor,
             transition: 'all 0.3s',
-            transform: mobileMenuOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none'
+            transform: mobileMenuOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none',
+            boxShadow: isMenuHovered ? '0 0 8px #00c6ff' : 'none'
           }}></div>
           <div style={{
             width: '24px',
             height: '2px',
-            background: lineColor,
+            background: isMenuHovered ? '#00c6ff' : lineColor,
             margin: '6px 0',
             opacity: mobileMenuOpen ? 0 : 1,
-            transition: 'all 0.3s'
+            transition: 'all 0.3s',
+            boxShadow: isMenuHovered ? '0 0 8px #00c6ff' : 'none'
           }}></div>
           <div style={{
             width: '24px',
             height: '2px',
-            background: lineColor,
+            background: isMenuHovered ? '#00c6ff' : lineColor,
             transition: 'all 0.3s',
-            transform: mobileMenuOpen ? 'rotate(-45deg) translate(5px, -5px)' : 'none'
+            transform: mobileMenuOpen ? 'rotate(-45deg) translate(5px, -5px)' : 'none',
+            boxShadow: isMenuHovered ? '0 0 8px #00c6ff' : 'none'
           }}></div>
         </button>
       </div>
 
       <div className={`mobile-menu-overlay ${mobileMenuOpen ? 'open' : ''}`}>
-        <Link to="/#home" onClick={() => setMobileMenuOpen(false)}>Home</Link>
-        <Link to="/#services" onClick={() => setMobileMenuOpen(false)}>Servicios</Link>
-        <Link to="/#contact" onClick={() => setMobileMenuOpen(false)}>Contacto</Link>
+        <a href="#home" onClick={(e) => scrollToSection(e, 'home')}>Home</a>
+        <a href="#services" onClick={(e) => scrollToSection(e, 'services')}>Servicios</a>
+        <a href="#contact" onClick={(e) => scrollToSection(e, 'contact')}>Contacto</a>
         <Link to="/privacy" onClick={() => setMobileMenuOpen(false)}>Aviso de Privacidad</Link>
       </div>
     </nav>
@@ -294,6 +332,16 @@ const Header = () => {
           <motion.div variants={itemVariants}>
             <motion.a
               href="#contact"
+              onClick={(e) => {
+                e.preventDefault();
+                const element = document.getElementById('contact');
+                const lenis = (window as any).lenis;
+                if (element && lenis) {
+                  lenis.scrollTo(element, { duration: 2.5 });
+                } else if (element) {
+                  element.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
               className="btn"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -317,10 +365,16 @@ const Information = () => {
     <section style={{ padding: '80px 0', background: 'white', overflow: 'hidden' }}>
       <div className="container">
         <motion.div
-          initial={{ opacity: 0, y: 30 }} // Reducido el offset x lateral para mejor compatibilidad móvil
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.1 }} // Threshold más bajo para móvil
-          transition={{ duration: 0.8 }}
+          initial={{ opacity: 0, x: -250, skewX: -10 }}
+          whileInView={{ opacity: 1, x: 0, skewX: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{
+            type: "spring",
+            stiffness: 50,
+            damping: 15,
+            mass: 1,
+            duration: 1.2
+          }}
           style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}
         >
           <h2 style={{ fontSize: '0.9rem', color: '#00c6ff', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 700, marginBottom: '20px' }}>
@@ -833,14 +887,23 @@ const Footer = () => (
   </footer>
 );
 
-const MainContent = () => (
-  <>
-    <Header />
-    <Information />
-    <Services />
-    <Contact />
-  </>
-);
+const MainContent = () => {
+  useEffect(() => {
+    // Asegurar que al entrar a MainContent (Home) estemos arriba
+    window.scrollTo(0, 0);
+    const lenis = (window as any).lenis;
+    if (lenis) lenis.scrollTo(0, { immediate: true });
+  }, []);
+
+  return (
+    <>
+      <Header />
+      <Information />
+      <Services />
+      <Contact />
+    </>
+  );
+};
 
 
 
