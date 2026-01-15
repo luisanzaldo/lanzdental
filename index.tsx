@@ -334,13 +334,7 @@ const Header = () => {
               href="#contact"
               onClick={(e) => {
                 e.preventDefault();
-                const element = document.getElementById('contact');
-                const lenis = (window as any).lenis;
-                if (element && lenis) {
-                  lenis.scrollTo(element, { duration: 2.5 });
-                } else if (element) {
-                  element.scrollIntoView({ behavior: 'smooth' });
-                }
+                window.dispatchEvent(new CustomEvent('open-chatbot', { detail: { type: 'appointment' } }));
               }}
               className="btn"
               whileHover={{ scale: 1.05 }}
@@ -564,6 +558,7 @@ const ServiceCardFlip: React.FC<ServiceCardFlipProps> = ({ item, index }) => {
         <h3 style={{ fontSize: '3rem', marginBottom: '20px', color: '#0077b6', fontFamily: "'Montserrat', sans-serif", fontWeight: 900 }}>{item.title}</h3>
         <p style={{ fontSize: '1.25rem', color: '#556', marginBottom: '30px', lineHeight: 1.6 }}>{item.desc}</p>
         <motion.button
+          onClick={() => window.dispatchEvent(new CustomEvent('open-chatbot', { detail: { type: 'appointment' } }))}
           whileHover={{ scale: 1.05, backgroundColor: '#00b0e4' }}
           whileTap={{ scale: 0.95 }}
           style={{
@@ -572,7 +567,7 @@ const ServiceCardFlip: React.FC<ServiceCardFlipProps> = ({ item, index }) => {
             boxShadow: '0 10px 20px rgba(0, 198, 255, 0.3)'
           }}
         >
-          VER DETALLES
+          AGENDA TU CITA
         </motion.button>
       </motion.div>
 
@@ -684,7 +679,21 @@ const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [msg, setMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [history, setHistory] = useState([{ role: 'bot', text: '¡Hola! Bienvenido a Lanz Dental. ¿En qué puedo ayudarte hoy?' }]);
+  const [history, setHistory] = useState<{ role: string, text: string }[]>([]);
+
+  const WELCOME_APPOINTMENT = '¡Hola! Bienvenido a Lanz Dental. ¿Qué día te gustaría agendar tu cita?';
+  const WELCOME_GENERAL = '¡Hola! Bienvenido a Lanz Dental. ¿En qué te podemos ayudar?';
+
+  useEffect(() => {
+    const handleOpenChat = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const isAppointment = customEvent.detail?.type === 'appointment';
+      setHistory([{ role: 'bot', text: isAppointment ? WELCOME_APPOINTMENT : WELCOME_GENERAL }]);
+      setIsOpen(true);
+    };
+    window.addEventListener('open-chatbot', handleOpenChat);
+    return () => window.removeEventListener('open-chatbot', handleOpenChat);
+  }, []);
 
   // sessionID persistente para mantener el hilo de la conversación
   const [sessionId] = useState(() => {
@@ -755,7 +764,12 @@ const Chatbot = () => {
     <>
       <button
         className={`chatbot-btn ${isOpen ? 'chat-open' : ''}`}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          if (!isOpen) {
+            setHistory([{ role: 'bot', text: WELCOME_GENERAL }]);
+          }
+          setIsOpen(!isOpen);
+        }}
         aria-label="Abrir chat"
       >
         {isOpen ? '✕' : <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z" /></svg>}
