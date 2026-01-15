@@ -81,7 +81,7 @@ const Navbar = () => {
           <span style={{
             fontFamily: 'Montserrat',
             fontWeight: 800,
-            fontSize: '1.45rem',
+            fontSize: '1.3rem',
             color: mobileMenuOpen ? '#fff' : (scrolled ? '#2790CB' : '#fff'),
             letterSpacing: '-0.5px',
             transition: 'color 0.3s ease'
