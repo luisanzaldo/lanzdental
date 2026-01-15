@@ -793,15 +793,19 @@ const Chatbot = () => {
           <button className="chat-close-btn" onClick={() => setIsOpen(false)}>✕</button>
         </div>
 
-        <div style={{
-          flex: 1,
-          padding: '20px',
-          overflowY: 'auto',
-          background: '#f8faff',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '12px'
-        }}>
+        <div
+          style={{
+            flex: 1,
+            padding: '20px',
+            overflowY: 'auto',
+            background: '#f8faff',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px'
+          }}
+          onWheel={(e) => e.stopPropagation()}
+          onTouchMove={(e) => e.stopPropagation()}
+        >
           {history.map((h, i) => (
             <div key={i} style={{
               alignSelf: h.role === 'user' ? 'flex-end' : 'flex-start',
