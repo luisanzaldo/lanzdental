@@ -78,6 +78,7 @@ const IMAGES = {
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -93,8 +94,9 @@ const Navbar = () => {
     }
   }, [mobileMenuOpen]);
 
-  // Hamburger line color logic
-  const isDarkBackgroundRoute = window.location.pathname.includes('/privacy') || scrolled;
+  // Use location instead of window.location for reactivity
+  const isPrivacy = location.pathname.includes('/privacy');
+  const isDarkBackgroundRoute = isPrivacy || scrolled;
   const lineColor = mobileMenuOpen ? '#fff' : (isDarkBackgroundRoute ? '#002d55' : '#fff');
 
   return (
@@ -179,7 +181,7 @@ const Header = () => {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { type: "spring", stiffness: 50, damping: 20 } // Rebote suave
+      transition: { type: "spring" as const, stiffness: 50, damping: 20 } // Rebote suave
     }
   };
 
@@ -282,10 +284,10 @@ const Information = () => {
     <section style={{ padding: '80px 0', background: 'white', overflow: 'hidden' }}>
       <div className="container">
         <motion.div
-          initial={{ opacity: 0, x: -250 }} // Empieza mucho más a la izquierda
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, amount: 0.2 }} // Inicia un poco antes
-          transition={{ duration: 1.2, type: "spring", bounce: 0.2 }} // Duración más larga para apreciar el recorrido
+          initial={{ opacity: 0, y: 30 }} // Reducido el offset x lateral para mejor compatibilidad móvil
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.1 }} // Threshold más bajo para móvil
+          transition={{ duration: 0.8 }}
           style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}
         >
           <h2 style={{ fontSize: '0.9rem', color: '#00c6ff', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 700, marginBottom: '20px' }}>
@@ -426,8 +428,8 @@ const ServiceCardFlip: React.FC<ServiceCardFlipProps> = ({ item, index }) => {
         <motion.div
           initial={{ rotateY: 180 }} // Empieza volteado (Viendo la parte de atrás/BW)
           whileInView={{ rotateY: 0 }} // Gira a frente (Color)
-          viewport={{ once: true, amount: 0.6 }} // Se voltea cuando está bien visible
-          transition={{ duration: 1.5, type: "spring", stiffness: 40, damping: 12 }}
+          viewport={{ once: true, amount: 0.3 }} // Reducido de 0.6 a 0.3 para asegurar que dispare en pantallas pequeñas
+          transition={{ duration: 1.5, type: "spring" as const, stiffness: 40, damping: 12 }}
           style={{
             width: '100%',
             height: '100%',
