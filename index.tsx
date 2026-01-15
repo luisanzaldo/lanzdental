@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { HashRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
+import Lenis from 'lenis';
 import PrivacyPolicy from './PrivacyPolicy';
 
 // --- HOOKS ---
@@ -41,6 +42,33 @@ const ScrollToTop = () => {
   const { pathname, hash } = useLocation();
 
   useEffect(() => {
+    // Initialize Lenis
+    const lenis = new Lenis({
+      duration: 2.0, // Slower scrolling for "premium" feel
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      touchMultiplier: 2,
+    });
+
+    // RAF loop
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    // Expose to window for manual scrolling
+    (window as any).lenis = lenis;
+
+    return () => {
+      lenis.destroy();
+      (window as any).lenis = null;
+    };
+  }, []);
+
+  useEffect(() => {
     if (!hash) {
       window.scrollTo(0, 0);
     } else {
@@ -48,7 +76,12 @@ const ScrollToTop = () => {
         const id = hash.replace('#', '');
         const element = document.getElementById(id);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
+          const lenis = (window as any).lenis;
+          if (lenis) {
+            lenis.scrollTo(element, { duration: 2.5 }); // Specifically slow duration for anchor links
+          } else {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
         }
       }, 100);
     }
