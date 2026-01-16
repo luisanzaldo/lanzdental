@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { HashRouter as Router, Routes, Route, Link, useLocation, Navigate, useNavigate } from 'react-router-dom';
@@ -28,15 +28,7 @@ const useOnScreen = (options: IntersectionObserverInit) => {
   return [ref, isVisible] as const;
 };
 
-const useParallax = (speed = 0.5) => {
-  const [offset, setOffset] = useState(0);
-  useEffect(() => {
-    const handleScroll = () => requestAnimationFrame(() => setOffset(window.scrollY * speed));
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [speed]);
-  return offset;
-};
+// useParallax hook removed in favor of motion value transforms
 
 const ScrollToTop = () => {
   const { pathname, hash, state } = useLocation();
@@ -44,7 +36,7 @@ const ScrollToTop = () => {
   useEffect(() => {
     // Initialize Lenis
     const lenis = new Lenis({
-      duration: 2.0, // Slower scrolling for "premium" feel
+      duration: 1.2, // Snappier scrolling for ProMotion feel
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
@@ -234,7 +226,8 @@ const Navbar = () => {
 };
 
 const Header = () => {
-  const yOffset = useParallax(0.5);
+  const { scrollY } = useScroll();
+  const yOffset = useTransform(scrollY, [0, 1000], [0, 500]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -265,7 +258,7 @@ const Header = () => {
         src={IMAGES.hero}
         alt="Consultorio Moderno"
         className="hero-bg"
-        style={{ transform: `translateY(${yOffset}px)` }} // Mantenemos parallax
+        style={{ y: yOffset }} // Mantenemos parallax optimizado
       />
 
       <div className="container" style={{ position: 'relative', zIndex: 2 }}>
