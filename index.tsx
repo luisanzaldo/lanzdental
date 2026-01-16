@@ -345,7 +345,7 @@ const Header = () => {
                 boxShadow: '0 10px 30px rgba(0, 198, 255, 0.4)'
               }}
             >
-              Agendar Cita
+              Agenda tu cita
             </motion.a>
           </motion.div>
         </motion.div>
